@@ -79,7 +79,6 @@ class NavigableNotebook(ttk.Notebook):
             'close': {'visible': True},   # "Close" button
             'add': {'visible': True},     # "Add" button
             'menu': {'visible': True},    # "Menu" dropdown button
-            'tab': {'visible': True},     # "Tabs" dropdown menu
             'next': {'visible': True},    # "Next" button
             'last': {'visible': True}     # "Last" button
         }
@@ -102,8 +101,10 @@ class NavigableNotebook(ttk.Notebook):
                       'setting': {'text': '|<', 'command': self.go_to_first, **self.color, 'font': self.font}},
             'prev': {'item': None, 'right': False, 'tooltip': 'Previous', 'visible': True,
                      'setting': {'text': '<', 'command': self.go_to_prev, 'font': self.font, **self.color}},
+
             'counter': {'item': None, 'right': False, 'tooltip': 'Counter', 'visible': True,
-                        'setting': {'text': f'{0:3}/{0:<3}', 'font': self.font, **self.color}},
+                        'setting': {'text': f'{0:3}/{0:<3}', 'command': self.show_tabs_list, 'font': self.font, **self.color}},
+
             'next': {'item': None, 'right': False, 'tooltip': 'Next', 'visible': True,
                      'setting': {'text': '>', 'command': self.go_to_next, 'font': self.font, **self.color}},
             'last': {'item': None, 'right': False, 'tooltip': 'Last', 'visible': True,
@@ -113,9 +114,7 @@ class NavigableNotebook(ttk.Notebook):
             'add': {'item': None, 'right': True, 'tooltip': 'Add tab', 'visible': True,
                     'setting': {'text': '+', 'command': self.add_new_tab, 'font': self.font, **self.color}},
             'menu': {'item': None, 'right': True, 'tooltip': 'Menu', 'visible': True,
-                     'setting': {'text': '☰', 'command': self.show_menu, 'font': self.font, **self.color}},
-            'tab': {'item': None, 'right': True, 'tooltip': 'Tab list', 'visible': True,
-                    'setting': {'text': '▼', 'command': self.show_tabs_list, 'font': self.font, **self.color}}
+                     'setting': {'text': '☰', 'command': self.show_menu, 'font': self.font, **self.color}}
         }
 
         self.show = update_recursive(self.show, self.order)
@@ -143,7 +142,6 @@ class NavigableNotebook(ttk.Notebook):
 
         # Initialize state
         self.after(100, self._update_buttons_state)
-        self.update_idletasks()
         self.tabs_width = self.winfo_width() - (self._calculate_left_margin() + self._calculate_right_margin())
 
     # === PROPERTIES ===
@@ -305,11 +303,12 @@ class NavigableNotebook(ttk.Notebook):
         right_x = width - 5
         for key in self.show.keys():
             if self.show[key]['visible']:
-                if key == 'counter':
-                    self.show[key]['item'] = tk.Label(self, **self.show[key]['setting'])
-                else:
-                    self.show[key]['item'] = self._create_label_button(**self.show[key]['setting'])
+                # if key == 'counter':
+                #     self.show[key]['item'] = tk.Label(self, **self.show[key]['setting'])
+                # else:
+                #     self.show[key]['item'] = self._create_label_button(**self.show[key]['setting'])
 
+                self.show[key]['item'] = self._create_label_button(**self.show[key]['setting'])
                 if self.tooltip and 'tooltip' in self.show[key]:
                     ToolTip(self.show[key]['item'], self.show[key]['tooltip'])
 
@@ -535,7 +534,7 @@ class NavigableNotebook(ttk.Notebook):
 
         if self._drag_start_index is None:
             return
-        
+
         # Mark that dragging has started
         if not self._is_dragging:
             self._is_dragging = True
@@ -738,15 +737,14 @@ class NavigableNotebook(ttk.Notebook):
 
     def show_tabs_list(self, event=None):
         """Shows the context menu for tabs list"""
-        if self.show['tab']['visible']:
-            menu = tk.Menu(self, tearoff=0)
-            for tab in self.tabs():
-                menu.add_command(label=self.tab(tab, 'text'), command=lambda t=tab: self.show_tab(t))
+        menu = tk.Menu(self, tearoff=0)
+        for tab in self.tabs():
+            menu.add_command(label=self.tab(tab, 'text'), command=lambda t=tab: self.show_tab(t))
 
-            # Show menu below the button
-            x = event.widget.winfo_rootx()
-            y = event.widget.winfo_rooty() + event.widget.winfo_height() + 2
-            menu.post(x, y)
+        # Show menu below the button
+        x = event.widget.winfo_rootx()
+        y = event.widget.winfo_rooty() + event.widget.winfo_height() + 2
+        menu.post(x, y)
 
     def show_menu(self, event=None):
         """Shows the context menu"""
@@ -824,7 +822,6 @@ class DemoApp:
                         'close': {'visible': False},   # "Close" button
                         'add': {'visible': False},     # "Add" button
                         'menu': {'visible': False},    # "Menu" button
-                        'tab': {'visible': False},     # Tabs dropdown
                         'next': {'visible': True},     # "Next" button
                         'last': {'visible': True}      # "Last" button
                     }
@@ -843,7 +840,6 @@ class DemoApp:
                         # 'close': {'visible': True},    # "Close" button
                         # 'add': {'visible': True},      # "Add" button
                         # 'menu': {'visible': True},     # "Menu" button
-                        # 'tab': {'visible': True},      # Tabs dropdown
                         # 'next': {'visible': False},    # "Next" button
                         'last': {'visible': True, 'right': True}     # "Last" button
                     }
@@ -859,7 +855,6 @@ class DemoApp:
                         'first': {'visible': True, 'setting': {'text': '|←|'}},
                         'prev': {'visible': False},    # "Previous" button
                         'menu': {'visible': True},     # "Menu" button
-                        'tab': {'visible': True, 'right': False, 'setting': {'text': '♥'}},  # Tabs dropdown
                         'add': {'visible': True, 'setting': {'text': '++'}},      # "Add" button
                         'close': {'visible': True, 'setting': {'text': '**'}},  # "Close" button
                         'last': {'visible': True, 'right': True, 'setting': {'text': '|→|'}},

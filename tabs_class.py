@@ -101,10 +101,8 @@ class NavigableNotebook(ttk.Notebook):
                       'setting': {'text': '|<', 'command': self.go_to_first, **self.color, 'font': self.font}},
             'prev': {'item': None, 'right': False, 'tooltip': 'Previous', 'visible': True,
                      'setting': {'text': '<', 'command': self.go_to_prev, 'font': self.font, **self.color}},
-
             'counter': {'item': None, 'right': False, 'tooltip': 'Counter', 'visible': True,
                         'setting': {'text': f'{0:3}/{0:<3}', 'command': self.show_tabs_list, 'font': self.font, **self.color}},
-
             'next': {'item': None, 'right': False, 'tooltip': 'Next', 'visible': True,
                      'setting': {'text': '>', 'command': self.go_to_next, 'font': self.font, **self.color}},
             'last': {'item': None, 'right': False, 'tooltip': 'Last', 'visible': True,

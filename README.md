@@ -74,7 +74,6 @@ order = {
     'close': {'visible': True},    # Close current tab
     'add': {'visible': True},      # Add new tab
     'menu': {'visible': True},     # Context menu
-    'tab': {'visible': True},      # Tab list dropdown
     'next': {'visible': True},     # Next tab
     'last': {'visible': True}      # Last tab
 }
@@ -143,7 +142,6 @@ notebook = NavigableNotebook(
         'close': {'visible': True},
         'add': {'visible': True, 'setting': {'text': '➕'}},
         'menu': {'visible': True, 'right': False},
-        'tab': {'visible': True},
         'next': {'visible': True},
         'last': {'visible': True}
     },
@@ -173,7 +171,7 @@ Run the demo:
 
 bash
 
-python tabs\_class\_3.py
+python tabs\_class.py
 
 🤝 Contributing
 ---------------
@@ -214,7 +212,7 @@ Contributions are welcome! Please feel free to submit issues, feature requests
 
 ```python
 import tkinter as tk
-from tabs_class_3 import NavigableNotebook
+from tabs_class import NavigableNotebook
 
 root = tk.Tk()
 notebook = NavigableNotebook(root, tooltip=True, cyclically=True)
@@ -258,7 +256,6 @@ order = {
     'close': {'visible': True},    # Закрыть текущую вкладку
     'add': {'visible': True},      # Добавить вкладку
     'menu': {'visible': True},     # Контекстное меню
-    'tab': {'visible': True},      # Выпадающий список вкладок
     'next': {'visible': True},     # Следующая вкладка
     'last': {'visible': True}      # Последняя вкладка
 }
@@ -329,7 +326,6 @@ notebook = NavigableNotebook(
         'close': {'visible': True},
         'add': {'visible': True, 'setting': {'text': '➕'}},
         'menu': {'visible': True, 'right': False},
-        'tab': {'visible': True},
         'next': {'visible': True},
         'last': {'visible': True}
     },
@@ -360,7 +356,7 @@ notebook = NavigableNotebook(
 
 bash
 
-python tabs\_class\_3.py
+python tabs\_class\.py
 
 🤝 Вклад в проект
 -----------------

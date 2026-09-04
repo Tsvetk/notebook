@@ -54,10 +54,6 @@ pip install tkinter  \# Usually pre-installed with Python
 🎛️ Configuration Options
 -------------------------
 
-
-
-
-
 | Parameter | Type | Description |
 | ------- | ------- | ------- |
 | order | dict | Control visibility of all button groups |
@@ -132,7 +128,6 @@ order = {
 
 ```python
 notebook = NavigableNotebook( root,
-    order={'first': False, 'prev': False, 'next': False, 'last': False},
     font=('Arial', 12)
 )
 ```
@@ -143,8 +138,14 @@ notebook = NavigableNotebook(
     root,
     order={
         'first': {'visible': True, 'setting': {'text': '⏮'}},
+        'prev': {'visible': True},
+        'counter': {'visible': True},
+        'close': {'visible': True},
         'add': {'visible': True, 'setting': {'text': '➕'}},
-        'menu': {'visible': True, 'right': False}
+        'menu': {'visible': True, 'right': False},
+        'tab': {'visible': True},
+        'next': {'visible': True},
+        'last': {'visible': True}
     },
     font=('Tahoma', 11, 'bold'),
     color={'bg': '#2c3e50', 'fg': '#ecf0f1'},
@@ -249,7 +250,8 @@ pip install tkinter  \# Обычно уже установлен с Python
 
 ### Группы кнопок
 
-```order = {
+```python
+order = {
     'first': {'visible': True},    # Первая вкладка
     'prev': {'visible': True},     # Предыдущая вкладка
     'counter': {'visible': True},  # Счетчик вкладок (напр., "3/10")
@@ -311,7 +313,6 @@ pip install tkinter  \# Обычно уже установлен с Python
 ```python
 notebook = NavigableNotebook(
     root,
-    order={'first': False, 'prev': False, 'next': False, 'last': False},
     font=('Arial', 12)
 )
 ```
@@ -323,8 +324,14 @@ notebook = NavigableNotebook(
     root,
     order={
         'first': {'visible': True, 'setting': {'text': '⏮'}},
+        'prev': {'visible': True},
+        'counter': {'visible': True},
+        'close': {'visible': True},
         'add': {'visible': True, 'setting': {'text': '➕'}},
-        'menu': {'visible': True, 'right': False}
+        'menu': {'visible': True, 'right': False},
+        'tab': {'visible': True},
+        'next': {'visible': True},
+        'last': {'visible': True}
     },
     font=('Tahoma', 11, 'bold'),
     color={'bg': '#2c3e50', 'fg': '#ecf0f1'},

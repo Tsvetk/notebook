@@ -16,6 +16,7 @@ def update_recursive(target, source):
             # Otherwise, update/add the value
             target[key] = value
     target = {key: target[key] for key in source.keys()}
+
     return target
 
 
@@ -97,23 +98,23 @@ class NavigableNotebook(ttk.Notebook):
         self.create_notebook_style()
 
         self.show = {
-            'first': {'item': None, 'right': False, 'tooltip': 'First',
+            'first': {'item': None, 'right': False, 'tooltip': 'First', 'visible': True,
                       'setting': {'text': '|<', 'command': self.go_to_first, **self.color, 'font': self.font}},
-            'prev': {'item': None, 'right': False, 'tooltip': 'Previous',
+            'prev': {'item': None, 'right': False, 'tooltip': 'Previous', 'visible': True,
                      'setting': {'text': '<', 'command': self.go_to_prev, 'font': self.font, **self.color}},
-            'counter': {'item': None, 'right': False, 'tooltip': 'Counter',
+            'counter': {'item': None, 'right': False, 'tooltip': 'Counter', 'visible': True,
                         'setting': {'text': f'{0:3}/{0:<3}', 'font': self.font, **self.color}},
-            'next': {'item': None, 'right': False, 'tooltip': 'Next',
+            'next': {'item': None, 'right': False, 'tooltip': 'Next', 'visible': True,
                      'setting': {'text': '>', 'command': self.go_to_next, 'font': self.font, **self.color}},
-            'last': {'item': None, 'right': False, 'tooltip': 'Last',
+            'last': {'item': None, 'right': False, 'tooltip': 'Last', 'visible': True,
                      'setting': {'text': '>|', 'command': self.go_to_last, 'font': self.font, **self.color}},
-            'close': {'item': None, 'right': True, 'tooltip': 'Close tab',
+            'close': {'item': None, 'right': True, 'tooltip': 'Close tab', 'visible': True,
                       'setting': {'text': '✕', 'command': self.close_current_tab, 'font': self.font, **self.color}},
-            'add': {'item': None, 'right': True, 'tooltip': 'Add tab',
+            'add': {'item': None, 'right': True, 'tooltip': 'Add tab', 'visible': True,
                     'setting': {'text': '+', 'command': self.add_new_tab, 'font': self.font, **self.color}},
-            'menu': {'item': None, 'right': True, 'tooltip': 'Menu',
+            'menu': {'item': None, 'right': True, 'tooltip': 'Menu', 'visible': True,
                      'setting': {'text': '☰', 'command': self.show_menu, 'font': self.font, **self.color}},
-            'tab': {'item': None, 'right': True, 'tooltip': 'Tab list',
+            'tab': {'item': None, 'right': True, 'tooltip': 'Tab list', 'visible': True,
                     'setting': {'text': '▼', 'command': self.show_tabs_list, 'font': self.font, **self.color}}
         }
 
@@ -142,6 +143,7 @@ class NavigableNotebook(ttk.Notebook):
 
         # Initialize state
         self.after(100, self._update_buttons_state)
+        self.update_idletasks()
         self.tabs_width = self.winfo_width() - (self._calculate_left_margin() + self._calculate_right_margin())
 
     # === PROPERTIES ===
@@ -332,11 +334,16 @@ class NavigableNotebook(ttk.Notebook):
 
     def _update_buttons_state(self, event=None):
         """Updates button states"""
+
+        if 'counter' not in self.show:
+            return
+
         current = self.current_index
         total = self.total_tabs
 
         if current >= 0 and total > 0:
             # Update counter
+
             if self.show['counter']['visible']:
                 self.show['counter']['item'].config(text=f"{current + 1:3}/{total:<3}")
 
@@ -528,13 +535,7 @@ class NavigableNotebook(ttk.Notebook):
 
         if self._drag_start_index is None:
             return
-
-        # If mouse is on close button - don't drag
-        # element = widget.identify(event.x, event.y)
-        # if "focus" != element:
-        #     print(element)
-        #     return
-
+        
         # Mark that dragging has started
         if not self._is_dragging:
             self._is_dragging = True
@@ -836,15 +837,15 @@ class DemoApp:
                 'description': 'Only tab management - Label',
                 'params': {
                     'order': {
-                        'first': {'visible': False},   # "First" button
-                        'prev': {'visible': False},    # "Previous" button
-                        'counter': {'visible': False},  # "1/10" counter
-                        'close': {'visible': True},    # "Close" button
-                        'add': {'visible': True},      # "Add" button
-                        'menu': {'visible': True},     # "Menu" button
-                        'tab': {'visible': True},      # Tabs dropdown
-                        'next': {'visible': False},    # "Next" button
-                        'last': {'visible': False}     # "Last" button
+                        'first': {'visible': True},   # "First" button
+                        # 'prev': {'visible': False},    # "Previous" button
+                        # 'counter': {'visible': False},  # "1/10" counter
+                        # 'close': {'visible': True},    # "Close" button
+                        # 'add': {'visible': True},      # "Add" button
+                        # 'menu': {'visible': True},     # "Menu" button
+                        # 'tab': {'visible': True},      # Tabs dropdown
+                        # 'next': {'visible': False},    # "Next" button
+                        'last': {'visible': True, 'right': True}     # "Last" button
                     }
                 },
                 'tabs_count': 8,

@@ -140,13 +140,19 @@ class NavigableNotebook(ttk.Notebook):
 
         # Initialize state
         self.after(100, self._update_buttons_state)
-        self.tabs_width = self.winfo_width() - (self._calculate_left_margin() + self._calculate_right_margin())
+        self.tabs_width = self.calc_tabs_width
 
     # === PROPERTIES ===
+    
     @property
     def total_tabs(self):
         """Total number of tabs"""
         return len(self.tabs())
+
+    @property
+    def calc_tabs_width(self):
+        tabs_width = self.winfo_width() - (self._calculate_left_margin() + self._calculate_right_margin())
+        return tabs_width
 
     @property
     def current_index(self):
@@ -301,11 +307,6 @@ class NavigableNotebook(ttk.Notebook):
         right_x = width - 5
         for key in self.show.keys():
             if self.show[key]['visible']:
-                # if key == 'counter':
-                #     self.show[key]['item'] = tk.Label(self, **self.show[key]['setting'])
-                # else:
-                #     self.show[key]['item'] = self._create_label_button(**self.show[key]['setting'])
-
                 self.show[key]['item'] = self._create_label_button(**self.show[key]['setting'])
                 if self.tooltip and 'tooltip' in self.show[key]:
                     ToolTip(self.show[key]['item'], self.show[key]['tooltip'])
@@ -323,7 +324,7 @@ class NavigableNotebook(ttk.Notebook):
 
     def _on_configure(self, event):
         """Resize event handler"""
-        self.tabs_width = self.winfo_width() - (self._calculate_left_margin() + self._calculate_right_margin())
+        self.tabs_width = self.calc_tabs_width
         self._update_margins()
         self._update_button_positions()
         self._update_buttons_state()
@@ -331,7 +332,6 @@ class NavigableNotebook(ttk.Notebook):
 
     def _update_buttons_state(self, event=None):
         """Updates button states"""
-
         if 'counter' not in self.show:
             return
 
@@ -572,18 +572,18 @@ class NavigableNotebook(ttk.Notebook):
     # === BUTTON VISIBILITY MANAGEMENT METHODS ===
 
     def show_button_group(self, group_name, visible):
-        """
-        Shows or hides a group of buttons
-        """
+        """Shows or hides a group of buttons"""
         for item in group_name.split('_'):
             if item in self.show:
                 self.show[item]['visible'] = visible
 
         self._destroy_buttons()
         self._create_buttons()
+        self.tabs_width = self.calc_tabs_width
         self._update_margins()
         self._update_button_positions()
         self._update_buttons_state()
+        self._update_tab('update_buttons')
 
     def _destroy_buttons(self):
         """Destroys all buttons"""
@@ -833,12 +833,12 @@ class DemoApp:
                 'params': {
                     'order': {
                         'first': {'visible': True},   # "First" button
-                        # 'prev': {'visible': False},    # "Previous" button
-                        # 'counter': {'visible': False},  # "1/10" counter
-                        # 'close': {'visible': True},    # "Close" button
-                        # 'add': {'visible': True},      # "Add" button
-                        # 'menu': {'visible': True},     # "Menu" button
-                        # 'next': {'visible': False},    # "Next" button
+                        'prev': {'visible': False},    # "Previous" button
+                        'counter': {'visible': False},  # "1/10" counter
+                        'close': {'visible': True},    # "Close" button
+                        'add': {'visible': True},      # "Add" button
+                        'menu': {'visible': True},     # "Menu" button
+                        'next': {'visible': False},    # "Next" button
                         'last': {'visible': True, 'right': True}     # "Last" button
                     }
                 },

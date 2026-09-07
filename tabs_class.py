@@ -132,9 +132,9 @@ class NavigableNotebook(ttk.Notebook):
 
         self.bind('<<NotebookTabChanged>>', self._update_buttons_state)
         self.bind('<MouseWheel>', self._on_mousewheel)
+        self.bind('<Button-4>', self._on_mousewheel)
+        self.bind('<Button-5>', self._on_mousewheel)
         self.bind('<Shift-MouseWheel>', self._on_mousewheel)
-        self.bind('<Control-Tab>', self._on_mousewheel)
-        self.bind('<Control-Shift-Tab>', self._on_mousewheel)
 
         self.bind('<Configure>', self._on_configure)
 
@@ -143,7 +143,7 @@ class NavigableNotebook(ttk.Notebook):
         self.tabs_width = self.calc_tabs_width
 
     # === PROPERTIES ===
-    
+
     @property
     def total_tabs(self):
         """Total number of tabs"""
@@ -362,62 +362,49 @@ class NavigableNotebook(ttk.Notebook):
         else:
             self._is_processing = True
 
+        def movement(event):
+            delta = 0
+            shift_pressed = bool(event.state & 0x1) if event.state != '??' else False
+            control_pressed = bool(event.state & 0x4)  if event.state != '??' else False
+            if event.delta :
+                # Windows/macOS
+                delta = -event.delta if shift_pressed else event.delta
+            elif event.num == 4:
+                delta = 120 if shift_pressed else -120
+            elif event.num == 5:
+                delta = -120 if shift_pressed else 120
+            return delta
+
         index = self.current_index
         len_tabs = self.total_tabs
 
-        if event:
-            if hasattr(event, 'keysym') and event.keysym == 'Tab':
-                state = event.state
-                shift_pressed = bool(state & 0x1)
-                control_pressed = bool(state & 0x4)
-                if control_pressed and shift_pressed:
-                    # Ctrl+Shift+Tab - previous tab
-                    if index > 0:
-                        index = index - 1
+        if isinstance(event, str):
+            self._is_processing = False
+            return None
+        elif event.type in ('4', '38'):
+            delta = movement(event)
+            if delta < 0:
+                if index < len_tabs - 1:
+                    index = index + 1
+                else:
+                    if self.cyclically:
+                        index = 0
                     else:
-                        if self.cyclically:
-                            index = len_tabs - 1
-                        else:
-                            self._is_processing = False
-                            return None
+                        self._is_processing = False
+                        return None
 
-                elif control_pressed:
-                    if index < len_tabs - 1:
-                        index = index + 1
+            elif delta > 0:
+                if index > 0:
+                    index = index - 1
+                else:
+                    if self.cyclically:
+                        index = len_tabs - 1
                     else:
-                        if self.cyclically:
-                            index = 0
-                        else:
-                            self._is_processing = False
-                            return None
-
-            elif hasattr(event, 'delta'):
-                if event.delta < 0:
-                    if index < len_tabs - 1:
-                        index = index + 1
-                    else:
-                        if self.cyclically:
-                            index = 0
-                        else:
-                            self._is_processing = False
-                            return None
-
-                elif event.delta > 0:
-                    if index > 0:
-                        index = index - 1
-                    else:
-                        if self.cyclically:
-                            index = len_tabs - 1
-                        else:
-                            self._is_processing = False
-                            return None
+                        self._is_processing = False
+                        return None
 
             self.tab(index, state='normal')
             self.select(index)
-
-        else:
-            self._is_processing = False
-            return None
 
         width_temp = self._get_text_geo(self.tab([index], 'text'))[0]
         if self.enable_close:
@@ -832,14 +819,14 @@ class DemoApp:
                 'description': 'Only tab management - Label',
                 'params': {
                     'order': {
-                        'first': {'visible': True},   # "First" button
-                        'prev': {'visible': False},    # "Previous" button
-                        'counter': {'visible': False},  # "1/10" counter
-                        'close': {'visible': True},    # "Close" button
-                        'add': {'visible': True},      # "Add" button
-                        'menu': {'visible': True},     # "Menu" button
-                        'next': {'visible': False},    # "Next" button
-                        'last': {'visible': True, 'right': True}     # "Last" button
+                        # 'first': {'visible': True},   # "First" button
+                        # 'prev': {'visible': False},    # "Previous" button
+                        # 'counter': {'visible': False},  # "1/10" counter
+                        # 'close': {'visible': True},    # "Close" button
+                        # 'add': {'visible': True},      # "Add" button
+                        # 'menu': {'visible': True},     # "Menu" button
+                        # 'next': {'visible': False},    # "Next" button
+                        # 'last': {'visible': True, 'right': True}     # "Last" button
                     }
                 },
                 'tabs_count': 8,
